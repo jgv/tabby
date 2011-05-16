@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <script>      
+      
+      var tabs = [];
+      var timeout = 6000; // ten minutes
+
+      function tabWasUpdated (tabId, changeInfo, tab) {
+        new Tab(tabId, changeInfo, tab);
+      }
+
+       function Tab (tabId, changeInfo, tab) {
+         this.id = tabId;
+         this.counter = 0;
+         this.pos = 0;
+         tabs.push(this);        
+         this.pos = this.pos + 1;
+         timer();
+         timerId = setInterval("timer()",1000);
+       }
+
+       function timer () {
+         for (i = 0, len = tabs.length; i < len; i++) {
+           tabs[i].counter = tabs[i].counter + 1;
+           if (tabs[i].counter === timeout) {
+             chrome.tabs.remove(tabs[i].id);
+             tabs.splice(tabs[i].pos, 1);
+             clearInterval(timerId);
+           }           
+         }
+       }
+
+      chrome.tabs.onUpdated.addListener(tabWasUpdated);
+    </script>
+  </body>
+</html>

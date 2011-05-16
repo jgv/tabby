@@ -1,0 +1,5 @@
+h1. Tabby
+
+p. Tabby removes old tabs for you automatically. Based on "Greg Leppert's":http://formasfunction.com "tweet":http://twitter.com/#!/formasfunction/status/67288399609995265, "The chore of maintaining and pruning browser tabs & windows is flawed. I want neglected ones to slowly fade away, to sink back into the dirt".
+
+p. "This software is not Alpha, not yet Beta" - Britney Spears

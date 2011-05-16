@@ -1,0 +1,7 @@
+{
+    "name" : "Tabby",
+    "version" : "0.0.1",
+    "description" : "Closes tabs that are open for too long",
+    "background_page" : "background.html",
+    "permissions" : [ "tabs" ]
+}
