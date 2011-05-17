@@ -7,7 +7,8 @@
     <script>      
       
       var tabs = [];
-      var timeout = 6000; // ten minutes
+      var timeout = 600; // ten minutes
+      var position = 0;
 
       function tabWasUpdated (tabId, changeInfo, tab) {
         new Tab(tabId, changeInfo, tab);
@@ -16,7 +17,7 @@
        function Tab (tabId, changeInfo, tab) {
          this.id = tabId;
          this.counter = 0;
-         this.pos = 0;
+         this.pos = position;
          tabs.push(this);        
          this.pos = this.pos + 1;
          timer();
