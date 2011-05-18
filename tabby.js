@@ -22,6 +22,10 @@ function tabWasRemoved (tabId, removeInfo) {
     }
 }
 
+function tabIsSelected() {
+    // party in here
+}
+
 function Tab (tabId, changeInfo, tab) {
     this.id = tabId.id;
     this.counter = 0;
@@ -30,7 +34,7 @@ function Tab (tabId, changeInfo, tab) {
 }
 
 function timer(id) {
-    timerId = setInterval(checkTabs, 1000);
+    timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
 }
 
 function stopTimer(timerId) {
@@ -50,4 +54,5 @@ function checkTabs () {
 
 chrome.tabs.onCreated.addListener(tabWasCreated);
 chrome.tabs.onUpdated.addListener(tabWasUpdated);
+chrome.tabs.onSelectionChanged.addListener(tabIsSelected);
 chrome.tabs.onRemoved.addListener(tabWasRemoved);
