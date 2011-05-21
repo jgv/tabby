@@ -1,6 +1,6 @@
 var tabs = [];
-var timeout = 900; // fifteen minutes... this seems to go by really quick though
-var timerId;
+var timeout = 20; // fifteen minutes... this seems to go by really quick though
+var timerId, selected;
 
 function tabWasCreated (tabId, changeInfo, tab) {
     new Tab(tabId, changeInfo, tab);
@@ -22,8 +22,8 @@ function tabWasRemoved (tabId, removeInfo) {
     }
 }
 
-function tabIsSelected() {
-    // party in here
+function tabIsSelected(id) {
+    selected = id
 }
 
 function Tab (tabId, changeInfo, tab) {
@@ -43,7 +43,9 @@ function stopTimer(timerId) {
 
 function checkTabs () {
     for (i = 0; i < tabs.length; i++) {
-        tabs[i].counter = tabs[i].counter + 1;
+        if (tabs[i].id != selected) {
+            tabs[i].counter = tabs[i].counter + 1;
+        }
         if (tabs[i].counter >= timeout) {
             chrome.tabs.remove(tabs[i].id);
             tabs.splice(tabs.indexOf(tabs[i]), 1);
