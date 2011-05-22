@@ -1,5 +1,5 @@
 var tabs = [];
-var timeout = 20; // fifteen minutes... this seems to go by really quick though
+var timeout = 900; // fifteen minutes... this seems to go by really quick though
 var timerId, selected;
 
 function tabWasCreated (tabId, changeInfo, tab) {
@@ -23,8 +23,12 @@ function tabWasRemoved (tabId, removeInfo) {
 }
 
 function tabIsSelected(id) {
-    selected = id
+    selected = id;
 }
+
+//function tabIsVideo(tab) {
+    
+//}
 
 function Tab (tabId, changeInfo, tab) {
     this.id = tabId.id;
@@ -42,7 +46,7 @@ function stopTimer(timerId) {
 }
 
 function checkTabs () {
-    for (i = 0; i < tabs.length; i++) {
+    for (i = 0; i < tabs.length; i++) {        
         if (tabs[i].id != selected) {
             tabs[i].counter = tabs[i].counter + 1;
         }
