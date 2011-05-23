@@ -1,5 +1,5 @@
 var tabs = [];
-var timeout = 30; // fifteen minutes... this seems to go by really quick though
+var timeout = 900; // fifteen minutes... this seems to go by really quick though
 var timerId, selected;
 
 function tabWasCreated (tabId, changeInfo, tab) {
