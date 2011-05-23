@@ -1,5 +1,5 @@
 var tabs = [];
-var timeout = 900; // fifteen minutes... this seems to go by really quick though
+var timeout = 20; // fifteen minutes... this seems to go by really quick though
 var timerId, selected;
 
 function tabWasCreated (tabId, changeInfo, tab) {
@@ -34,12 +34,9 @@ function stopTimer (timerId) {
 }
 
 function killTab (tab, timerId) {
-    console.log(tabs);
-    console.log(tab);
     chrome.tabs.remove(tab.id);
     stopTimer(timerId);
     tabs.splice(tabs.indexOf(tab, 1));    
-    console.log(tabs);
 }
 
 function checkTabs () {
@@ -57,3 +54,4 @@ function checkTabs () {
 chrome.tabs.onCreated.addListener(tabWasCreated);
 chrome.tabs.onUpdated.addListener(tabWasUpdated);
 chrome.tabs.onSelectionChanged.addListener(tabIsSelected);
+chrome.tabs.onRemoved.addListener(killTab);
