@@ -1,5 +1,5 @@
 var tabs = [];
-var timeout = 20; // fifteen minutes... this seems to go by really quick though
+var timeout = localStorage["time_out"] * 60000 || 60000; // default to ten minutes
 var timerId, selected;
 
 function tabWasCreated (tabId, changeInfo, tab) {
@@ -36,18 +36,20 @@ function stopTimer (timerId) {
 function killTab (tab, timerId) {
     chrome.tabs.remove(tab.id);
     stopTimer(timerId);
-    tabs.splice(tabs.indexOf(tab, 1));    
+    tabs.splice(tabs.indexOf(tab), 1);    
+    console.log('killing:' + tabs.indexOf(tab, 0));
 }
 
 function checkTabs () {
+    console.log(timeout);
     for (i = 0; i < tabs.length; i++) {
         if (tabs[i].id != selected) {
-            tabs[i].counter++;
+            tabs[i].counter = tabs[i].counter + 2; // bc the timeout is at 2 seconds
         }
         if (tabs[i].counter >= timeout) {            
             killTab(tabs[i], timerId);
         }
-  //      console.log(tabs[i].id + ': ' + tabs[i].counter);
+        // console.log(tabs[i].id + ': ' + tabs[i].counter);
     }
 }
 
