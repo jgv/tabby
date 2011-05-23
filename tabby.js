@@ -26,9 +26,17 @@ function tabIsSelected(id) {
     selected = id;
 }
 
-//function tabIsVideo(tab) {
-    
-//}
+
+function youTube (tab) {
+    ytplayer = document.getElementById("watch-player");
+    ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
+    function onytplayerStateChange (newState) {
+        if (newState === 'stopped') {  // pseduo code
+            tabs.splice(tabs.indexOf(tab, 1));
+            // kill the tab
+        }
+    }
+}
 
 function Tab (tabId, changeInfo, tab) {
     this.id = tabId.id;
