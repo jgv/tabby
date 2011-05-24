@@ -1,22 +1,7 @@
 var tabs = [];
-var timeout = localStorage["time_out"] * 60000 || 60000; // default to ten minutes
 var timerId, selected;
-
-function tabWasCreated (tabId, changeInfo, tab) {
-    new Tab(tabId, changeInfo, tab);
-}
-
-function tabWasUpdated (tabId, changeInfo, tab) {
-    for (n = 0; n < tabs.length; n++) {
-        if (tabs[n].id === tabId) {
-            tabs[n].counter = 0;
-        }
-    }
-}
-
-function tabIsSelected (id) {
-    selected = id;
-}
+var timeout = localStorage["time_out"] * 60000 || 60000; // default to ten minutes
+//var timeout = 20; // 'dev mode'
 
 function Tab (tabId, changeInfo, tab) {
     this.id = tabId.id;
@@ -34,26 +19,42 @@ function stopTimer (timerId) {
 }
 
 function killTab (tab, timerId) {
-    chrome.tabs.remove(tab.id);
-    stopTimer(timerId);
-    tabs.splice(tabs.indexOf(tab), 1);    
-    console.log('killing:' + tabs.indexOf(tab, 0));
+    chrome.tabs.remove(tab.id, function (){
+        stopTimer(timerId);
+        tabs.splice(tabs.indexOf(tab), 1);  
+    })(tab,timerId);
 }
-
+    
 function checkTabs () {
-    console.log(timeout);
     for (i = 0; i < tabs.length; i++) {
         if (tabs[i].id != selected) {
             tabs[i].counter = tabs[i].counter + 2; // bc the timeout is at 2 seconds
         }
-        if (tabs[i].counter >= timeout) {            
+        if (tabs[i].counter >= timeout) {
             killTab(tabs[i], timerId);
         }
         // console.log(tabs[i].id + ': ' + tabs[i].counter);
     }
 }
 
-chrome.tabs.onCreated.addListener(tabWasCreated);
-chrome.tabs.onUpdated.addListener(tabWasUpdated);
-chrome.tabs.onSelectionChanged.addListener(tabIsSelected);
-chrome.tabs.onRemoved.addListener(killTab);
+// Chrome API interacitons
+chrome.tabs.onCreated.addListener(function (tabId, changeInfo, tab) {
+    new Tab(tabId, changeInfo, tab);
+});
+
+chrome.tabs.onRemoved.addListener(function (tab) {
+    chrome.tabs.remove(tab.id);
+    tabs.splice(tabs.indexOf(tab), 1);    
+});
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    for (n = 0; n < tabs.length; n++) {
+        if (tabs[n].id === tabId) {
+            tabs[n].counter = 0;
+        }
+    }
+});
+
+chrome.tabs.onSelectionChanged.addListener(function (tabId) {
+    selected = tabId;
+});
