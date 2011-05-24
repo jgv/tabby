@@ -4,10 +4,11 @@
     "description" : "Closes unattented tabs",
     "background_page" : "background.html",
     "permissions" : [ "tabs" ],
-    "options_page" : "options.html"
-    //"content_scripts" : [ 
-    //    {
-    //        "js" : ["youtube.js"]
-    //    }
-    //]
+    "options_page" : "options.html",
+    "content_scripts" : [ 
+        {
+            "matches" : ["http://*/*"],
+            "js" : ["youtube.js"]
+        }
+    ]
 }

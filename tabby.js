@@ -1,7 +1,7 @@
 var tabs = [];
 var timerId, selected;
-var timeout = localStorage["time_out"] * 60 || 600; // default to ten minutes
-//var timeout = 20; // 'dev mode'
+//var timeout = localStorage["time_out"] * 60 || 600; // default to ten minutes
+var timeout = 10; // 'dev mode'
 
 function Tab (tab) {
     this.id = tab.id;
@@ -27,20 +27,27 @@ function killTab (tab, timerId) {
 }
     
 function checkTabs () {
-    //chrome.tabs.getAllInWindow(null, function (tabArray){
-        //for (i = 0; i <= tabArray.length; i++){
-            //chrome.tabs.sendRequest(tabArray[i])
-        //}
-    //});
     for (i = 0; i < tabs.length; i++) {
         tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
         if (tabs[i].counter >= timeout) {
-            killTab(tabs[i], timerId);
+            if (tabs[i].video === false) {
+                killTab(tabs[i], timerId);
+            } else {
+                chrome.tabs.executeScript(tabs[i].id,
+                                          {file: "youtube.js"},
+                                          function callback(state){
+                                              if (state === 1) {
+                                                  console.log('prevent');
+                                                  return false;
+                                              } else {
+                                                  killTab(tabs[i], timerId);
+                                              }
+                                          });
+            }
+            // console.log(tabs[i].id + ': ' + tabs[i].counter);
         }
-        // console.log(tabs[i].id + ': ' + tabs[i].counter);
     }
 }
-
 // Chrome API interacitons
 chrome.tabs.onCreated.addListener(function (tab) {
     new Tab(tab);
