@@ -3,21 +3,10 @@ var timerId, selected;
 var timeout = localStorage["time_out"] * 60 || 600; // default to ten minutes
 //var timeout = 20; // 'dev mode'
 
-
-function youTube (tab) {
-    ytplayer = document.getElementById("watch-player");
-    ytplayer.addEventListener("onStateChange", "onytplayerStateChange");
-    function onytplayerStateChange (newState) {
-        if (newState === 'stopped') {  // pseduo code
-            tabs.splice(tabs.indexOf(tab, 1));
-            // kill the tab
-        }
-    }
-}
-
-function Tab (tabId, changeInfo, tab) {
-    this.id = tabId.id;
+function Tab (tab) {
+    this.id = tab.id;
     this.counter = 0;
+    this.video = /youtube.com\/watch/.test(tab.url) ? true : false;
     tabs.push(this);
     timer(this.id);
 }
@@ -33,15 +22,18 @@ function stopTimer (timerId) {
 function killTab (tab, timerId) {
     chrome.tabs.remove(tab.id, function (){
         stopTimer(timerId);
-        tabs.splice(tabs.indexOf(tab), 1);  
+        tabs.splice(tabs.indexOf(tab), 1);
     })(tab,timerId);
 }
     
 function checkTabs () {
+    //chrome.tabs.getAllInWindow(null, function (tabArray){
+        //for (i = 0; i <= tabArray.length; i++){
+            //chrome.tabs.sendRequest(tabArray[i])
+        //}
+    //});
     for (i = 0; i < tabs.length; i++) {
-        if (tabs[i].id != selected) {
-            tabs[i].counter = tabs[i].counter + 2; // bc the timeout is at 2 seconds
-        }
+        tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
         if (tabs[i].counter >= timeout) {
             killTab(tabs[i], timerId);
         }
@@ -50,19 +42,22 @@ function checkTabs () {
 }
 
 // Chrome API interacitons
-chrome.tabs.onCreated.addListener(function (tabId, changeInfo, tab) {
-    new Tab(tabId, changeInfo, tab);
+chrome.tabs.onCreated.addListener(function (tab) {
+    new Tab(tab);
 });
 
 chrome.tabs.onRemoved.addListener(function (tab) {
     chrome.tabs.remove(tab.id);
-    tabs.splice(tabs.indexOf(tab), 1);    
+    tabs.splice(tabs.indexOf(tab), 1);
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     for (n = 0; n < tabs.length; n++) {
         if (tabs[n].id === tabId) {
-            tabs[n].counter = 0;
+            tabs[n].counter = 0;            
+            if (changeInfo.status === "loading" || "complete") {
+                tabs[n].video = /youtube.com\/watch/.test(tab.url) ? true : false;
+            }
         }
     }
 });
