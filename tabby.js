@@ -1,6 +1,6 @@
 var tabs = [];
 var timerId, selected;
-var timeout = localStorage["time_out"] * 60 || 600; // default to ten minutes
+var timeout = localStorage["time_out"] ? localStorage["time_out"] * 60 : 600; // default to ten minutes
 //var timeout = 20; // 'dev mode'
 
 function Tab (tabId, changeInfo, tab) {
