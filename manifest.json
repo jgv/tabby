@@ -3,11 +3,18 @@
     "version" : "0.0.1",
     "description" : "Closes unattented tabs",
     "background_page" : "background.html",
-    "permissions" : [ "tabs" ],
+    "permissions" : [   
+        "tabs",
+        "http://*/*",
+        "https://*/*"
+    ],
     "options_page" : "options.html",
     "content_scripts" : [ 
         {
-            "matches" : ["http://*/*"],
+            "matches" : [
+                "http://*/*", 
+                "https://*/*"
+            ],
             "js" : ["youtube.js"]
         }
     ]
