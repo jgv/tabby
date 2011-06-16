@@ -20,7 +20,6 @@ function stopTimer (timerId) {
 
 // destroy tab, stop its timer, and remove it from tab array
 function killTab (tab) {
-    console.log(tab);
     chrome.tabs.remove(tab.id, function (){
         stopTimer(tab.timer);
         tabs.splice(tabs.indexOf(tab), 1);  
@@ -30,7 +29,6 @@ function killTab (tab) {
 // tab polling    
 function checkTabs () {    
     for (var i = 0; i < tabs.length; i++) {
-        console.log(tabs[i].counter);
         if (tabs[i].id != selected) {
             tabs[i].counter = tabs[i].counter + 2; // bc the timeout is at 2 seconds
         }
@@ -47,14 +45,12 @@ chrome.tabs.onCreated.addListener(function (tab) {
 });
 
 chrome.tabs.onRemoved.addListener(function (tabId) {
-console.log(tabId);                                      
    for (var i = 0; i < tabs.length; i++) {
         if (tabs[i].id === tabId) {            
             return false;
         } else {
             chrome.tabs.remove(tabId, function() {
                                    tabs.splice(tabs.indexOf(tabs[i]), 1);  
-                                   console.log('removed tab' + tabId);
                                });   
         }       
     }
