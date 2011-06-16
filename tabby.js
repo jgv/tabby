@@ -1,58 +1,78 @@
 var tabs = [];
 var timerId, selected;
+var localhostOpt = localStorage["localhost"] || true; // assume we want to block localhost from closing
 var timeout = localStorage["time_out"] ? localStorage["time_out"] * 60 : 600; // default to ten minutes
-//var timeout = 20; // 'dev mode'
+//var timeout = 10; // 'dev mode'
 
-function Tab (tabId, changeInfo, tab) {
-    this.id = tabId.id;
+// tab constructor
+function Tabby (tab) {
+    this.id = tab.id;
     this.counter = 0;
+    this.tab = tab;
     tabs.push(this);
-    timer(this.id);
+    this.timer = setInterval(checkTabs, 2000);
 }
 
-function timer (id) {
-    timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
-}
-
+// destroy timer
 function stopTimer (timerId) {
     clearInterval(timerId);
 }
 
-function killTab (tab, timerId) {
+// destroy tab, stop its timer, and remove it from tab array
+function killTab (tab) {
+    console.log(tab);
     chrome.tabs.remove(tab.id, function (){
-        stopTimer(timerId);
+        stopTimer(tab.timer);
         tabs.splice(tabs.indexOf(tab), 1);  
-    })(tab,timerId);
+    }); 
 }
-    
-function checkTabs () {
-    for (i = 0; i < tabs.length; i++) {
+
+// tab polling    
+function checkTabs () {    
+    for (var i = 0; i < tabs.length; i++) {
+        console.log(tabs[i].counter);
         if (tabs[i].id != selected) {
             tabs[i].counter = tabs[i].counter + 2; // bc the timeout is at 2 seconds
         }
         if (tabs[i].counter >= timeout) {
-            killTab(tabs[i], timerId);
+            killTab(tabs[i]);
         }
         // console.log(tabs[i].id + ': ' + tabs[i].counter);
     }
 }
 
 // Chrome API interacitons
-chrome.tabs.onCreated.addListener(function (tabId, changeInfo, tab) {
-    new Tab(tabId, changeInfo, tab);
+chrome.tabs.onCreated.addListener(function (tab) {
+    new Tabby(tab);
 });
 
-chrome.tabs.onRemoved.addListener(function (tab) {
-    chrome.tabs.remove(tab.id);
-    tabs.splice(tabs.indexOf(tab), 1);    
-});
-
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    for (n = 0; n < tabs.length; n++) {
-        if (tabs[n].id === tabId) {
-            tabs[n].counter = 0;
-        }
+chrome.tabs.onRemoved.addListener(function (tabId) {
+console.log(tabId);                                      
+   for (var i = 0; i < tabs.length; i++) {
+        if (tabs[i].id === tabId) {            
+            return false;
+        } else {
+            chrome.tabs.remove(tabId, function() {
+                                   tabs.splice(tabs.indexOf(tabs[i]), 1);  
+                                   console.log('removed tab' + tabId);
+                               });   
+        }       
     }
+});
+
+
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {                                      
+    // i want to keep dev tabs open
+    if (localStorage["localhost"] && (/localhost/.test(changeInfo.url) || /127.0.0.1/.test(changeInfo.url))){
+        stopTimer(timerId);
+        return false;
+    } else {
+        for (var i = 0; i < tabs.length; i++) {
+            if (tabs[i].id === tabId) {
+                tabs[i].counter = 0;
+            }
+        }                              
+    }           
 });
 
 chrome.tabs.onSelectionChanged.addListener(function (tabId) {
