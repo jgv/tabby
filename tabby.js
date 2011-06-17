@@ -30,12 +30,12 @@ function checkTabs () {
     for (i = 0; i < tabs.length; i++) {
         tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
         if (tabs[i].counter >= timeout) {
-            if (tabs[i].video === false) {
+            if (!tabs[i].video) {
                 killTab(tabs[i], timerId);
             } else {
                 chrome.tabs.executeScript(tabs[i].id,
                                           {file: "youtube.js"},
-                                          function callback(state){
+                                          function callback (state) {
                                               if (state === 1) {
                                                   console.log('prevent');
                                                   return false;
@@ -61,7 +61,7 @@ chrome.tabs.onRemoved.addListener(function (tab) {
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     for (n = 0; n < tabs.length; n++) {
         if (tabs[n].id === tabId) {
-            tabs[n].counter = 0;            
+            tabs[n].counter = 0;
             if (changeInfo.status === "loading" || "complete") {
                 tabs[n].video = /youtube.com\/watch/.test(tab.url) ? true : false;
             }
