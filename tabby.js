@@ -32,17 +32,6 @@ function checkTabs () {
         if (tabs[i].counter >= timeout) {
             if (!tabs[i].video) {
                 killTab(tabs[i], timerId);
-            } else {
-                chrome.tabs.executeScript(tabs[i].id,
-                                          {file: "youtube.js"},
-                                          function callback (state) {
-                                              if (state === 1) {
-                                                  console.log('prevent');
-                                                  return false;
-                                              } else {
-                                                  killTab(tabs[i], timerId);
-                                              }
-                                          });
             }
             // console.log(tabs[i].id + ': ' + tabs[i].counter);
         }
@@ -58,12 +47,14 @@ chrome.tabs.onRemoved.addListener(function (tab) {
     tabs.splice(tabs.indexOf(tab), 1);
 });
 
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-    for (n = 0; n < tabs.length; n++) {
-        if (tabs[n].id === tabId) {
-            tabs[n].counter = 0;
-            if (changeInfo.status === "loading" || "complete") {
-                tabs[n].video = /youtube.com\/watch/.test(tab.url) ? true : false;
+chrome.tabs.onUpdated.addListener(function (youtube, sender, sendResponse) {
+    if (youtube) {
+        for (n = 0; n < tabs.length; n++) {
+            if (tabs[n].id === tabId) {
+                tabs[n].counter = 0;            
+                if (changeInfo.status === "loading" || "complete") {
+                    tabs[n].video = /youtube.com\/watch/.test(tab.url) ? true : false;
+                }
             }
         }
     }
