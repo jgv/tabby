@@ -1,7 +1,7 @@
 {
     "name" : "Tabby",
-    "version" : "0.0.1",
-    "description" : "Closes unattented tabs",
+    "version" : "0.0.2",
+    "description" : "Closes tabs that are open for too long",
     "background_page" : "background.html",
     "permissions" : [ "tabs" ],
     "options_page" : "options.html"

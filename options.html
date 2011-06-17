@@ -4,30 +4,42 @@
 
 // Saves options to localStorage.
 function save_options() {
-  var input = document.getElementById("time_out");
-  var time_out = input.value;
-  localStorage["time_out"] = time_out;
+    // set length of timeout
+    var input = document.getElementById("time_out");
+    var time_out = input.value;
+    localStorage["time_out"] = time_out;
 
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Saved!";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
+    // toggle localhost mode
+    var localhost_option = document.getElementById("localhost_mode");
+    var localhost_value = localhost_option.children[localhost_option.selectedIndex].value;
+    localStorage["localhost"] = localhost_value;
+
+    // Update status to let user know options were saved.
+    var status = document.getElementById("status");
+    status.innerHTML = "Saved!";
+    setTimeout(function() {
+        status.innerHTML = "";
+    }, 750);
 }
 
 function init() {
-  var input = document.getElementById("time_out");
-  if (localStorage["time_out"]) {
-    input.value = localStorage["time_out"];
-  }
+    var input = document.getElementById("time_out");
+    if (localStorage["time_out"]) {
+        input.value = localStorage["time_out"];
+    }
 }
 
 </script>
 
 <body onload="init()">
+  <h1>Tabby</h1>
   <p>How many minutes should a tab be inactive for before Tabby closes it?</p>
   <input id="time_out"></input>
+  <p>Do you want Tabby to be sensitive to tabs with "localhost" or "127.0.0.1" in the uri?</p>
+  <select id="localhost_mode">
+    <option value="true" selected>Yes</option>
+    <option value="false">No</option>
+  </select>
   <div id="status"></div>
   <br>
   <button onclick="save_options()">Save</button>
