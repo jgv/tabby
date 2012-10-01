@@ -1,8 +1,17 @@
 {
-    "name" : "Tabby",
-    "version" : "0.0.2",
-    "description" : "Closes tabs that are open for too long",
-    "background_page" : "background.html",
-    "permissions" : [ "tabs" ],
-    "options_page" : "options.html"
+  "name" : "Tabby",
+  "manifest_version" : 2,
+  "version" : "0.0.1",
+  "description" : "Closes unattented tabs",
+  "permissions" : ["tabs", "*://*/*"],
+  "options_page" : "options.html",
+  "content_scripts" : [ 
+    {
+      "matches" : ["*://*/*"],
+      "js" : ["youtube.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["tabby.js"]
+  }
 }
