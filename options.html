@@ -1,35 +1,26 @@
 <html>
-<head><title>Tabby Options</title></head>
-<script type="text/javascript">
+<head>
+  <title>Tabby Options</title>
+  <script src="options.js"></script>
+  <style>
+    .whitelist { display:block }
+  </style>
+</head>
 
-// Saves options to localStorage.
-function save_options() {
-  var input = document.getElementById("time_out");
-  var time_out = input.value;
-  localStorage["time_out"] = time_out;
-
-  // Update status to let user know options were saved.
-  var status = document.getElementById("status");
-  status.innerHTML = "Saved!";
-  setTimeout(function() {
-    status.innerHTML = "";
-  }, 750);
-}
-
-function init() {
-  var input = document.getElementById("time_out");
-  if (localStorage["time_out"]) {
-    input.value = localStorage["time_out"];
-  }
-}
-
-</script>
-
-<body onload="init()">
+<body>
   <p>How many minutes should a tab be inactive for before Tabby closes it?</p>
   <input id="time_out"></input>
+  <br>
+
+  <p>Enter URLs to whitelist (soundcloud, youtube, etc).
+    <button id="add_url">+</button>
+  </p>
+  <div id="urls">
+    <input class="whitelist" id="whitelist_0"></input>
+  </div>
   <div id="status"></div>
   <br>
-  <button onclick="save_options()">Save</button>
+
+  <button id="save">Save</button>
 </body>
 </html>

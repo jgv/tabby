@@ -1,65 +1,56 @@
-var tabs = [];
-var timerId, selected;
-//var timeout = localStorage["time_out"] * 60 || 600; // default to ten minutes
-var timeout = 10; // 'dev mode'
+var tabs = [], timerId, selected, timeout, tabId, dev = false;
+
+// set the timeout
+dev ? timeout = 10 : localStorage["time_out"] * 60 || 600; 
 
 function Tab (tab) {
-    this.id = tab.id;
-    this.counter = 0;
-    this.video = /youtube.com\/watch/.test(tab.url) ? true : false;
-    tabs.push(this);
-    timer(this.id);
-}
+  this.id = tab.id;
+  this.counter = 0;
+  if (localStorage["whitelist"]) {
+    var urls = JSON.parse(localStorage["whitelist"]);
+    var re = new RegExp(urls.join("|", "i"));
+    var url = tab.url;
+    if (url.match(re)) this.persist = true;
+  }
+  tabs.push(this);
+  timer(this.id);
+  console.log(this);
+}    
 
 function timer (id) {
-    timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
+  timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
 }
 
 function stopTimer (timerId) {
-    clearInterval(timerId);
+  clearInterval(timerId);
 }
 
 function killTab (tab, timerId) {
+  if (tab !== undefined && tab.id !== undefined) {
     chrome.tabs.remove(tab.id, function (){
-        stopTimer(timerId);
-        tabs.splice(tabs.indexOf(tab), 1);
+      stopTimer(timerId);
+      tabs.splice(tabs.indexOf(tab), 1);
     })(tab,timerId);
+  }
 }
-    
+
 function checkTabs () {
-    for (i = 0; i < tabs.length; i++) {
-        tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
-        if (tabs[i].counter >= timeout) {
-            if (!tabs[i].video) {
-                killTab(tabs[i], timerId);
-            }
-            // console.log(tabs[i].id + ': ' + tabs[i].counter);
-        }
+  for (i = 0; i < tabs.length; i++) {
+    tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
+    if (tabs[i].counter >= timeout) {
+      if (!tabs[i].persist) {
+        killTab(tabs[i], timerId);
+      }
+      // console.log(tabs[i].id + ': ' + tabs[i].counter);
     }
+  }
 }
+
 // Chrome API interacitons
 chrome.tabs.onCreated.addListener(function (tab) {
-    new Tab(tab);
-});
-
-chrome.tabs.onRemoved.addListener(function (tab) {
-    chrome.tabs.remove(tab.id);
-    tabs.splice(tabs.indexOf(tab), 1);
-});
-
-chrome.tabs.onUpdated.addListener(function (youtube, sender, sendResponse) {
-    if (youtube) {
-        for (n = 0; n < tabs.length; n++) {
-            if (tabs[n].id === tabId) {
-                tabs[n].counter = 0;            
-                if (changeInfo.status === "loading" || "complete") {
-                    tabs[n].video = /youtube.com\/watch/.test(tab.url) ? true : false;
-                }
-            }
-        }
-    }
+  new Tab(tab);
 });
 
 chrome.tabs.onSelectionChanged.addListener(function (tabId) {
-    selected = tabId;
+  selected = tabId;
 });
