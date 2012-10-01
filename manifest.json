@@ -5,12 +5,6 @@
   "description" : "Closes unattented tabs",
   "permissions" : ["tabs", "*://*/*"],
   "options_page" : "options.html",
-  "content_scripts" : [ 
-    {
-      "matches" : ["*://*/*"],
-      "js" : ["youtube.js"]
-    }
-  ],
   "background": {
     "scripts": ["tabby.js"]
   }
