@@ -2,25 +2,39 @@
 <head>
   <title>Tabby Options</title>
   <script src="options.js"></script>
+  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400' rel='stylesheet' type='text/css'>
   <style>
-    .whitelist { display:block }
+    body, input { font-family: 'Source Sans Pro', sans-serif; }
+    .whitelist { display:block;margin-bottom:8px; }
+    input { border: thin #444 solid; padding: 4px; font-size: 14px}
+    button { margin-bottom: 20px; background-color: #FA8C8C; border:none; }
+    button:active { background-color: #444; color:white}
+    button:hover { cursor:pointer; opacity:0.8 }
+    a { color: gray; text-decoration:none }
+    a:hover { color: black; text-decoration:underline }
+    a:visited { color: gray }
   </style>
 </head>
 
 <body>
+  <h1>Tabby Settings</h1>
   <p>How many minutes should a tab be inactive for before Tabby closes it?</p>
   <input id="time_out"></input>
   <br>
 
-  <p>Enter URLs to whitelist (soundcloud, youtube, etc).
-    <button id="add_url">+</button>
-  </p>
+  <p>Enter URLs to whitelist (soundcloud, youtube, etc).</p>
+  <button id="add_url">+ new entry</button>
+
   <div id="urls">
     <input class="whitelist" id="whitelist_0"></input>
   </div>
   <div id="status"></div>
   <br>
 
-  <button id="save">Save</button>
+  <button id="save">Save Settings</button>
+
+  <div>
+    <p><a href="https://github.com/jgv/tabby">Visit Tabby on Github</a></p>
+  </div>
 </body>
 </html>
