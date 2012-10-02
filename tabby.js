@@ -1,4 +1,4 @@
-var tabs = [], timerId, selected, timeout, tabId, dev = true;
+var tabs = [], timers = [], selected, timeout, timerIncrement = 2, dev = true;
 
 // set the timeout
 dev ? timeout = 10 : localStorage["time_out"] * 60 || 600; 
@@ -14,41 +14,31 @@ function Tab (tab) {
   }
   tabs.push(this);
   timer(this.id);
-  console.log("new tab: " + this)
 }    
 
 function timer (id) {
-  timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
-  console.log(timerId);
+  timers[id] = setInterval(checkTabs, 1000 * timerIncrement); // playing with the timer interval for performance
 }
 
-function stopTimer (timerId) {
-  clearInterval(timerId);
+function stopTimer (id) {
+  clearInterval(timers[id]);
 }
 
-function resetTimer (tabId) {
+function resetTimer (id) {
   for (i = 0; i < tabs.length; i++) {
-    if (tabs[i].id == tabId) tabs[i].counter = 0;
+    if (tabs[i].id == id) tabs[i].counter = 0;
   }
 }
 
-function killTab (tab, timerId) {
-  if (tab !== undefined && tab.id !== undefined && timerId !== undefined) {
-    chrome.tabs.remove(tab.id, function (){
-      stopTimer(timerId);
-      tabs.splice(tabs.indexOf(tab), 1);
-    })(tab,timerId);
-  }
+function killTab (tab) {
+  chrome.tabs.remove(tab.id);
 }
 
 function checkTabs () {
   for (i = 0; i < tabs.length; i++) {
-    tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + 2;
+    tabs[i].counter = (tabs[i].id === selected) ? tabs[i].counter : tabs[i].counter + timerIncrement;
     if (tabs[i].counter >= timeout) {
-      if (!tabs[i].persist) {
-        killTab(tabs[i], timerId);
-      }
-      // console.log(tabs[i].id + ': ' + tabs[i].counter);
+      if(!tabs[i].persist) killTab(tabs[i]);
     }
   }
 }
@@ -58,7 +48,15 @@ chrome.tabs.onCreated.addListener(function (tab) {
   new Tab(tab);
 });
 
-chrome.tabs.onSelectionChanged.addListener(function (tabId) {
-  selected = tabId;
-  resetTimer(tabId);
+
+chrome.tabs.onRemoved.addListener(function(id, info){
+  stopTimer(id);
+  for (i = 0; i < tabs.length; i++) {
+    if (tabs[i].id == id) tabs.splice(i, 1);
+  }
+});
+
+chrome.tabs.onSelectionChanged.addListener(function (id) {
+  selected = id;
+  resetTimer(id);
 });
