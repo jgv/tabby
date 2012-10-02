@@ -1,4 +1,4 @@
-var tabs = [], timerId, selected, timeout, tabId, dev = false;
+var tabs = [], timerId, selected, timeout, tabId, dev = true;
 
 // set the timeout
 dev ? timeout = 10 : localStorage["time_out"] * 60 || 600; 
@@ -14,19 +14,26 @@ function Tab (tab) {
   }
   tabs.push(this);
   timer(this.id);
-  console.log(this);
+  console.log("new tab: " + this)
 }    
 
 function timer (id) {
   timerId = setInterval(checkTabs, 2000); // playing with the timer interval for performance
+  console.log(timerId);
 }
 
 function stopTimer (timerId) {
   clearInterval(timerId);
 }
 
+function resetTimer (tabId) {
+  for (i = 0; i < tabs.length; i++) {
+    if (tabs[i].id == tabId) tabs[i].counter = 0;
+  }
+}
+
 function killTab (tab, timerId) {
-  if (tab !== undefined && tab.id !== undefined) {
+  if (tab !== undefined && tab.id !== undefined && timerId !== undefined) {
     chrome.tabs.remove(tab.id, function (){
       stopTimer(timerId);
       tabs.splice(tabs.indexOf(tab), 1);
@@ -53,4 +60,5 @@ chrome.tabs.onCreated.addListener(function (tab) {
 
 chrome.tabs.onSelectionChanged.addListener(function (tabId) {
   selected = tabId;
+  resetTimer(tabId);
 });
