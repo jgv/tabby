@@ -2,7 +2,6 @@
   "name" : "Tabby",
   "version" : "0.1.2",
   "manifest_version" : 2,
-  "default_locale": "en",
   "description" : "Closes unattented tabs.",
   "icons" : {
     "16" : "files/icon16.png",
