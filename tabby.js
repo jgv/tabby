@@ -1,6 +1,6 @@
 (function(){
 
-var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = true;
+var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
 // set the timeout
 dev ? timeout = 10 : localStorage["time_out"] * 60 || 600; 
