@@ -6,14 +6,14 @@ window.onload = function(){
   var save = document.getElementById("save");
 
   // show user specfied time or default
-  localStorage["time_out"] ? input.value = localStorage["time_out"] : input.value = 10;
+  localStorage["Tabby_time_out"] ? input.value = localStorage["Tabby_time_out"] : input.value = 10;
 
-  if (localStorage["whitelist"]) populateList();
+  if (localStorage["Tabby_whitelist"]) populateList();
 
   function populateList(){
     var firstField = document.getElementById("whitelist_0");
     urlList.removeChild(firstField);
-    var urls = JSON.parse(localStorage["whitelist"]);
+    var urls = JSON.parse(localStorage["Tabby_whitelist"]);
     for(i = 0; i < urls.length; i++) {
       if (urls[i]) {
         var newUrl = document.createElement("input");
@@ -36,14 +36,14 @@ window.onload = function(){
     // save timeout
     var input = document.getElementById("time_out");
     var time_out = input.value;
-    localStorage["time_out"] = time_out;
+    localStorage["Tabby_time_out"] = time_out;
 
     // save whitelist
     var urls = document.getElementsByClassName("whitelist"), urlList = [];
     for (i=0; i < urls.length; i++) {
       if (urls[i].value && urls[i].value !== "") urlList.push(urls[i].value);
     }
-    localStorage["whitelist"] = JSON.stringify(urlList);
+    localStorage["Tabby_whitelist"] = JSON.stringify(urlList);
     chrome.extension.getBackgroundPage().updateSetting();
     // Update status to let user know options were saved.
     save.innerHTML = "Saved!";

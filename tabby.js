@@ -3,19 +3,19 @@
 var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
 // set the timeout
-dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 600;
+dev ? timeout = 10 : timeout = localStorage["Tabby_time_out"] * 60 || 600;
 
 function Tab (tab) {
   this.id = tab.id;
   this.counter = 0;
   this.url = tab.url;
-  if (checkWhitelist(this.url) || tab.url.match("chrome-devtools")) this.persist = true
+  if (checkWhitelist(this.url) || tab.url.match("chrome-devtools")) this.persist = true;
   return this;
 }
 
 function checkWhitelist (url) {
-  if (localStorage["whitelist"]) {
-    var urls = JSON.parse(localStorage["whitelist"]);
+  if (localStorage["Tabby_whitelist"]) {
+    var urls = JSON.parse(localStorage["Tabby_whitelist"]);
     if (urls.length > 0) {
       var re = new RegExp(urls.join("|", "i"));
       if (re.test(url)) {
