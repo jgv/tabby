@@ -5,7 +5,9 @@ window.onload = function(){
   var urlList = document.getElementById("urls");
   var save = document.getElementById("save");
 
-  if (localStorage["time_out"]) input.value = localStorage["time_out"];
+  // show user specfied time or default
+  localStorage["time_out"] ? input.value = localStorage["time_out"] : input.value = 10;
+
   if (localStorage["whitelist"]) populateList();
 
   function populateList(){
@@ -27,7 +29,7 @@ window.onload = function(){
     var newUrl = document.createElement("input");
     newUrl.className = "whitelist";
     var inputFields = document.getElementsByClassName("whitelist");
-    urlList.insertBefore(newUrl, inputFields[0]);
+    urlList.insertBefore(newUrl, inputFields[inputFields.length]);
   }, false);
 
   save.addEventListener("click", function(){
@@ -44,10 +46,9 @@ window.onload = function(){
     localStorage["whitelist"] = JSON.stringify(urlList);
 
     // Update status to let user know options were saved.
-    var status = document.getElementById("status");
-    status.innerHTML = "Saved!";
+    save.innerHTML = "Saved!";
     setTimeout(function() {
-      status.innerHTML = "";
+      save.innerHTML = "Save Settings";
     }, 750);
   }, false);
 

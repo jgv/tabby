@@ -2,9 +2,9 @@
 <head>
   <title>Tabby Options</title>
   <script src="options.js"></script>
-  <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400' rel='stylesheet' type='text/css'>
   <style>
-    body, input { font-family: 'Source Sans Pro', sans-serif; }
+    body, input { font-family: sans-serif; }
+    body { font-size: 12px;}
     .whitelist { display:block;margin-bottom:8px; }
     input { border: thin #444 solid; padding: 4px; font-size: 14px}
     button { margin-bottom: 20px; background-color: #FA8C8C; border:none; }
@@ -13,28 +13,36 @@
     a { color: gray; text-decoration:none }
     a:hover { color: black; text-decoration:underline }
     a:visited { color: gray }
+    section { float:left; padding:10px}
+    #save-section { margin-left: 40px;}
+    #save { font-size:18px; margin-top:40px;}
+    h1 { padding: 20px 10px }
   </style>
 </head>
 
 <body>
   <h1>Tabby Settings</h1>
-  <p>How many minutes should a tab be inactive for before Tabby closes it?</p>
-  <input id="time_out"></input>
-  <br>
+  <section>
+    <p>How many minutes should a tab be inactive for before Tabby closes it?</p>
+    <input id="time_out"></input>
+  </section>
 
-  <p>Enter URLs to whitelist (soundcloud, youtube, etc).</p>
-  <button id="add_url">+ new entry</button>
+  <section>
+    <p>Enter URLs to whitelist (soundcloud, youtube, etc).</p>
 
-  <div id="urls">
-    <input class="whitelist" id="whitelist_0"></input>
-  </div>
-  <div id="status"></div>
-  <br>
-
-  <button id="save">Save Settings</button>
-
+    <div id="urls">
+      <input class="whitelist" id="whitelist_0"></input>
+    </div>
+    <button id="add_url">+ new entry</button>
+  </section>
+  <section id="save-section">
+    <button id="save">Save Settings</button>
   <div>
     <p><a href="https://github.com/jgv/tabby">Visit Tabby on Github</a></p>
+    <p><a href="https://twitter.com/jgv" class="twitter-follow-button" data-show-count="false" data-size="large" data-dnt="true">Follow @jgv</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script></p>
   </div>
+  </section>
+
 </body>
 </html>
