@@ -44,7 +44,7 @@ window.onload = function(){
       if (urls[i].value && urls[i].value !== "") urlList.push(urls[i].value);
     }
     localStorage["whitelist"] = JSON.stringify(urlList);
-
+    chrome.extension.getBackgroundPage().updateSetting();
     // Update status to let user know options were saved.
     save.innerHTML = "Saved!";
     setTimeout(function() {

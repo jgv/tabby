@@ -1,9 +1,8 @@
 (function(){
-
 var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
 // set the timeout
-dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 600;
+dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 60000;
 
 function Tab (tab) {
   this.id = tab.id;
@@ -11,9 +10,13 @@ function Tab (tab) {
   this.url = tab.url;
   if (localStorage["whitelist"]) {
     var urls = JSON.parse(localStorage["whitelist"]);
-    var re = new RegExp(urls.join("|", "i"));
-    var url = tab.url;
-    if (url.match(re)) this.persist = true;
+    if (urls.length > 0) {
+      var re = new RegExp(urls.join("|", "i"));
+      var url = tab.url;
+      if (url.match(re)) {
+        this.persist = true;
+      }
+    }
   }
   if (tab.url.match("chrome-devtools")) this.persist = true;
   return this;
@@ -82,5 +85,4 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
   selected = activeInfo.tabId;
   resetTimer(activeInfo.tabId);
 });
-
 }).call(this);
