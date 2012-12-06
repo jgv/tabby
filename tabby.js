@@ -1,4 +1,4 @@
-//(function(){
+(function(){
 
 var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
@@ -98,4 +98,4 @@ chrome.tabs.onActivated.addListener(function(activeInfo){
   resetTimer(activeInfo.tabId);
 });
 
-//}).call(this);
+}).call(this);
