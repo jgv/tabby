@@ -3,7 +3,7 @@
 var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
 // set the timeout
-dev ? timeout = 10 : localStorage["time_out"] * 60 || 600; 
+dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 600;
 
 function Tab (tab) {
   this.id = tab.id;
