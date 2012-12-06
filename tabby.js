@@ -72,7 +72,6 @@ chrome.tabs.onCreated.addListener(function(tab){
 });
 
 chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab){
-  console.log("updated")
   if (tab.selected === true){
     selected = id;
     resetTimer(id);
