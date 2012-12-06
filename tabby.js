@@ -1,25 +1,30 @@
-(function(){
+//(function(){
+
 var tabs = timers = [], selected, timeout, timerIncrement = 2, dev = false;
 
 // set the timeout
-dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 60000;
+dev ? timeout = 10 : timeout = localStorage["time_out"] * 60 || 600;
 
 function Tab (tab) {
   this.id = tab.id;
   this.counter = 0;
   this.url = tab.url;
+  if (checkWhitelist(this.url) || tab.url.match("chrome-devtools")) this.persist = true
+  return this;
+}
+
+function checkWhitelist (url) {
   if (localStorage["whitelist"]) {
     var urls = JSON.parse(localStorage["whitelist"]);
     if (urls.length > 0) {
       var re = new RegExp(urls.join("|", "i"));
-      var url = tab.url;
-      if (url.match(re)) {
-        this.persist = true;
+      if (re.test(url)) {
+        return true;
+      } else {
+        return false;
       }
     }
   }
-  if (tab.url.match("chrome-devtools")) this.persist = true;
-  return this;
 }
 
 function timer (id) {
@@ -79,10 +84,18 @@ chrome.tabs.onUpdated.addListener(function(id, changeInfo, tab){
     selected = id;
     resetTimer(id);
   }
+  for (tab in tabs) {
+    if (tabs[tab].id == id && changeInfo.url) {
+      tabs[tab].url = changeInfo.url;
+      if (checkWhitelist(changeInfo.url)) tabs[tab].persist = true;
+      break;
+    }
+  }
 });
 
 chrome.tabs.onActivated.addListener(function(activeInfo){
   selected = activeInfo.tabId;
   resetTimer(activeInfo.tabId);
 });
-}).call(this);
+
+//}).call(this);
